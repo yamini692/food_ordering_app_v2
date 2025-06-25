@@ -1,0 +1,41 @@
+<div class="container mt-5" style="max-width: 600px;">
+  <h2 class="text-center mb-4">Add a New Dish</h2>
+
+  <%= form_with model: @menu_item, local: true do |f| %>
+    <div class="mb-3">
+      <%= f.label :name, class: "form-label" %>
+      <%= f.text_field :name, class: "form-control" %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :price, class: "form-label" %>
+      <%= f.number_field :price, step: 0.01, class: "form-control" %>
+    </div>
+
+    <div class="form-check mb-3">
+      <%= f.check_box :available, class: "form-check-input" %>
+      <%= f.label :available, class: "form-check-label" %>
+    </div>
+
+    <div class="mb-4">
+      <%= f.label :description, class: "form-label" %>
+      <%= f.text_area :description, class: "form-control", rows: 3 %>
+    </div>
+
+    <!-- ✅ FIXED SECTION -->
+    <div class="mb-3">
+      <%= f.label :categories, "Select Categories", class: "form-label" %><br>
+      <%= f.collection_check_boxes :category_ids, Category.all, :id, :name do |cb| %>
+        <div class="form-check">
+          <%= cb.check_box(class: "form-check-input") %>
+          <%= cb.label(class: "form-check-label") %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="d-grid">
+      <%= f.submit "Add Dish", class: "btn btn-success" %>
+    </div>
+
+  <% end %>
+</div>

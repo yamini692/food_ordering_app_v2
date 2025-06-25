@@ -1,0 +1,21 @@
+<div class="container mt-5">
+  <div class="card mx-auto shadow" style="max-width: 600px;">
+    <div class="card-body">
+      <h2 class="card-title text-center mb-4"><%= @menu_item.name %></h2>
+
+      <p><strong>Price:</strong> ₹<%= @menu_item.price %></p>
+      <p><strong>Availability:</strong> 
+        <span class="badge <%= @menu_item.available ? 'bg-success' : 'bg-secondary' %>">
+          <%= @menu_item.available ? "Available" : "Unavailable" %>
+        </span>
+      </p>
+      <p><strong>Description:</strong><br><%= @menu_item.description %></p>
+      <p>Categories: <%= @menu_item.categories.pluck(:name).join(", ") %></p>
+
+
+      <div class="text-center mt-4">
+        <%= link_to "← Back to Menu", menu_items_path, class: "btn btn-outline-primary" %>
+      </div>
+    </div>
+  </div>
+</div>

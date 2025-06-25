@@ -1,0 +1,29 @@
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+  <div class="card p-4 shadow" style="width: 100%; max-width: 400px;">
+    <h2 class="text-center mb-4">Select Payment Method</h2>
+
+    <%= form_with model: @order, local: true do |form| %>
+      
+      <!-- ✅ Quantity Selector -->
+      <div class="mb-3">
+        <%= form.label :quantity, "Quantity", class: "form-label" %>
+        <%= form.number_field :quantity, in: 1..10, value: @order.quantity || 1, class: "form-control" %>
+      </div>
+
+      <div class="form-check mb-3">
+        <%= form.radio_button :payment_method, "cash", class: "form-check-input", id: "cash" %>
+        <%= form.label :payment_method_cash, "Cash on Delivery", class: "form-check-label", for: "cash" %>
+      </div>
+
+      <div class="form-check mb-4">
+        <%= form.radio_button :payment_method, "upi", class: "form-check-input", id: "upi" %>
+        <%= form.label :payment_method_upi, "UPI", class: "form-check-label", for: "upi" %>
+      </div>
+
+      <div class="d-grid">
+        <%= form.submit "Place Order", class: "btn btn-primary btn-block" %>
+      </div>
+      
+    <% end %>
+  </div>
+</div>

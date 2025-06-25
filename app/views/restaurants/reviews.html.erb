@@ -1,0 +1,52 @@
+<!-- app/views/restaurants/reviews.html.erb -->
+<div class="container mt-5">
+  <h2 class="mb-4">All Reviews</h2>
+
+  <% if @restaurant_reviews.present? %>
+    <h4 class="text-success mb-3">Restaurant Reviews</h4>
+    <% @restaurant_reviews.each do |review| %>
+      <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">By: <%= review.user.name %></h5>
+          <p><strong>Review:</strong> <%= review.content %></p>
+          <p><strong>Rating:</strong> <%= review.rating %> / 5</p>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <p class="text-muted">No restaurant reviews yet.</p>
+  <% end %>
+  <% if @order_reviews.present? %>
+    <h4 class="text-warning mt-5 mb-3">Order Reviews</h4>
+    <% @order_reviews.each do |review| %>
+      <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+          <p><strong>Review:</strong> <%= review.content %></p>
+          <p><strong>Rating:</strong> <%= review.rating %> / 5</p>
+          <p class="text-muted"><em>By: <%= review.user.name %></em></p>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <p class="text-muted">No order reviews yet.</p>
+  <% end %>
+
+
+  <% if @menu_reviews.present? %>
+    <h4 class="text-info mt-5 mb-3">Menu Item Reviews</h4>
+    <% @menu_reviews.each do |review| %>
+      <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Dish: <%= review.reviewable.name %></h5>
+          <p><strong>Review:</strong> <%= review.content %></p>
+          <p><strong>Rating:</strong> <%= review.rating %> / 5</p>
+          <p class="text-muted"><em>By: <%= review.user.name %></em></p>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <p class="text-muted">No menu reviews yet.</p>
+  <% end %>
+
+  <%= link_to "Back to Home", menu_items_path, class: "btn btn-primary" %>
+</div>

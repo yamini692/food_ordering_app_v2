@@ -1,0 +1,15 @@
+<h2><%= @restaurant.name %> - Restaurant Page</h2>
+
+<h3>Reviews for this Restaurant</h3>
+
+<% if @restaurant.reviews.any? %>
+  <% @restaurant.reviews.each do |review| %>
+    <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+      <p><strong>By:</strong> <%= review.user.name %></p>
+      <p><strong>Review:</strong> <%= review.content %></p>
+      <p><strong>Rating:</strong> <%= review.rating %> / 5</p>
+    </div>
+  <% end %>
+<% else %>
+  <p>No reviews yet for this restaurant.</p>
+<% end %>

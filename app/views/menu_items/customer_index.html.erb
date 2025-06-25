@@ -1,0 +1,23 @@
+<h2>Explore Our Dishes</h2>
+
+<%= form_with url: customer_menu_path, method: :get, local: true do %>
+  <%= label_tag :query, "Search for a Dish:" %>
+  <%= text_field_tag :query, params[:query], placeholder: "e.g., Chicken 65" %>
+  <%= submit_tag "Search" %>
+<% end %>
+
+<div style="display: flex; flex-wrap: wrap;">
+  <% if @menu_items.present? %>
+    <% @menu_items.each do |item| %>
+      <div style="border: 1px solid #ccc; padding: 10px; margin: 10px; width: 220px;">
+        <h4><%= item.name %></h4>
+        <p>₹<%= item.price %></p>
+        <p><%= item.available ? "Available" : "Unavailable" %></p>
+         <%= link_to "View Reviews", menu_item_reviews_path(item), class: "btn btn-outline-info btn-sm" %>
+        <%= button_to "Add to Cart", cart_items_path(menu_item_id: item.id), method: :post %>
+      </div>
+    <% end %>
+  <% else %>
+    <p>No dishes found for "<%= params[:query] %>"</p>
+  <% end %>
+</div>

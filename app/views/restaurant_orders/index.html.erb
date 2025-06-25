@@ -1,0 +1,76 @@
+<div class="container mt-5">
+  <div class="text-center mb-4">
+    <h2>📋 My Restaurant's Orders</h2>
+  </div>
+
+  <% if @orders.empty? %>
+    <div class="alert alert-info text-center">
+      No orders have been placed yet.
+    </div>
+  <% else %>
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered align-middle shadow-sm">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">🍽️ Dish</th>
+            <th scope="col">🔢 Quantity</th>
+            <th scope="col">💰 Total Price</th>
+            <th scope="col">👤 Customer</th>
+            <th scope="col">📦 Status</th>
+            <th scope="col">🚚 Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @orders.each do |order| %>
+            <tr>
+              <td><strong><%= order.menu_item&.name || "Item Missing" %></strong></td>
+              <td><%= order.quantity %></td>
+              <td>
+                <% if order.menu_item.present? %>
+                  ₹<%= order.quantity.to_i * order.menu_item.price %>
+                <% else %>
+                  <span class="text-danger">Menu Item Missing</span>
+                <% end %>
+              </td>
+
+              <td><%= order.user&.name.presence || order.user&.email || "Unknown" %></td>
+              <td>
+                <% status_badge = case order.status
+                  when "placed" then "bg-secondary"
+                  when "on the way" then "bg-info text-dark"
+                  when "delivered" then "bg-success"
+                  else "bg-warning"
+                end %>
+                <span class="badge <%= status_badge %>">
+                  <%= order.status.titleize %>
+                </span>
+              </td>
+              <td>
+                <% if order.status == "placed" %>
+                  <%= button_to "Book (On the Way)", book_restaurant_order_path(order),
+                        method: :patch,
+                        class: "btn btn-outline-primary btn-sm me-2",
+                        data: { confirm: "Mark as 'On the Way'?" } %>
+
+                  <%= button_to "Mark as Delivered", restaurant_order_path(order),
+                        method: :patch,
+                        class: "btn btn-outline-success btn-sm",
+                        data: { confirm: "Confirm delivery?" } %>
+
+                <% elsif order.status == "on the way" %>
+                  <%= button_to "Mark as Delivered", restaurant_order_path(order),
+                        method: :patch,
+                        class: "btn btn-outline-success btn-sm",
+                        data: { confirm: "Confirm delivery?" } %>
+
+                <% elsif order.status == "delivered" %>
+                  <span class="text-success fw-bold">Delivered ✅</span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

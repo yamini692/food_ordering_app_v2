@@ -1,0 +1,13 @@
+<div class="container mt-4">
+  <h2 class="mb-3">Your Info</h2>
+
+  <div class="card p-3 shadow-sm">
+    <p><strong>Address:</strong> <%= @info.address %></p>
+    <p><strong>Phone:</strong> <%= @info.phone %></p>
+    <p><strong>Bio:</strong> <%= @info.bio %></p>
+  </div>
+
+  <div class="mt-4 text-end">
+    <%= link_to "Edit Info", edit_info_path(@info), class: "btn btn-primary" %>
+  </div>
+</div>

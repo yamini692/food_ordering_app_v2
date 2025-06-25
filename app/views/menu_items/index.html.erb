@@ -1,0 +1,30 @@
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Your Menu</h2>
+
+  <div class="d-flex justify-content-center mb-4 gap-3">
+    <%= link_to "Add Dish", new_menu_item_path, class: "btn btn-success" %>
+    <%= link_to "Your Orders", restaurant_orders_path, class: "btn btn-info" %>
+    <%= link_to "View Restaurant Reviews", restaurant_reviews_path, class: "btn btn-outline-info" %>
+    <%= link_to "Logout", destroy_user_session_path, class: "btn btn-outline-primary",method: :delete, data: { confirm: "Are you sure?", turbo: false } %>  
+  </div>
+
+  <div class="row">
+    <% @menu_items.each do |item| %>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow">
+          <div class="card-body">
+            <h4 class="card-title"><%= item.name %></h4>
+            <p class="card-text">₹<%= item.price %></p>
+            <p class="card-text"><strong>Status:</strong> <%= item.available ? "Available" : "Unavailable" %></p>
+          </div>
+          <div class="card-footer d-flex flex-wrap gap-2 justify-content-center">
+            <%= link_to "View", menu_item_path(item), class: "btn btn-secondary btn-sm" %>
+            <%= link_to "Edit", edit_menu_item_path(item), class: "btn btn-warning btn-sm" %>
+            <%= button_to "Remove Dish", menu_item_path(item), method: :delete, class: "btn btn-danger btn-sm" %>
+            <%= link_to "View Reviews", menu_item_reviews_path(item), class: "btn btn-outline-info btn-sm" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

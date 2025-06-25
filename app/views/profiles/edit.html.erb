@@ -1,0 +1,20 @@
+<h2><%= @profile.new_record? ? "Create Profile" : "Edit Profile" %></h2>
+
+<%= form_with model: @profile, local: true do |f| %>
+  <div class="mb-3">
+    <%= f.label :phone %>
+    <%= f.text_field :phone, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :bio %>
+    <%= f.text_area :bio, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :address %>
+    <%= f.text_field :address, class: "form-control" %>
+  </div>
+
+  <%= f.submit class: "btn btn-success" %>
+<% end %>

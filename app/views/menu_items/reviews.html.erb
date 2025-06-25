@@ -1,0 +1,23 @@
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Reviews for <%= @menu_item.name %></h2>
+
+  <% if @reviews.any? %>
+    <% @reviews.each do |review| %>
+      <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title mb-2"><strong>By:</strong> <%= review.user.name %></h5>
+          <p class="card-text"><strong>Review:</strong> <%= review.content %></p>
+          <p class="card-text text-warning">
+            <strong>Rating:</strong>
+            <%= '★' * review.rating %><%= '☆' * (5 - review.rating) %> 
+            (<%= review.rating %>/5)
+          </p>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="alert alert-info text-center">
+      No reviews yet for this item.
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,13 @@
+<h2>Reviews for <%= @menu_item.name %></h2>
+
+<% if @reviews.any? %>
+  <% @reviews.each do |review| %>
+    <div style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
+      <p><strong><%= review.user.name %>:</strong> <%= review.content %> (Rating: <%= review.rating %>)</p>
+    </div>
+  <% end %>
+<% else %>
+  <p>No reviews yet for this menu item.</p>
+<% end %>
+
+<%= link_to "Back to Menu", menu_items_path, class: "btn btn-secondary" %>

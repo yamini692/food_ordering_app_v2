@@ -1,0 +1,25 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Your Cart</h2>
+
+  <% if @cart_items.any? %>
+    <div class="list-group mb-4">
+      <% @cart_items.each do |item| %>
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <%= link_to item.menu_item.name, menu_item_path(item.menu_item), class: "text-decoration-none fw-bold" %>
+            <span class="ms-2 text-muted">₹<%= item.menu_item.price %></span>
+          </div>
+          <div>
+            <%= button_to "Delete", cart_item_path(item), method: :delete, class: "btn btn-sm btn-danger me-2" %>
+            <%= button_to "Book Now", orders_path(menu_item_id: item.menu_item.id), method: :post, class: "btn btn-sm btn-primary" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Button to Book All Items in Cart -->
+  <%= button_to "Book All Items", bulk_orders_path, method: :post, class: "btn btn-success" %>
+  <% else %>
+    <div class="alert alert-info">Your cart is empty.</div>
+  <% end %>
+</div>

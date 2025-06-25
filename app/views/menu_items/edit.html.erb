@@ -1,0 +1,45 @@
+<div class="container mt-5">
+  <div class="card mx-auto shadow" style="max-width: 600px;">
+    <div class="card-body">
+      <h2 class="text-center mb-4">Edit Menu Item</h2>
+
+      <%= form_with(model: @menu_item, local: true) do |form| %>
+        <div class="mb-3">
+          <%= form.label :name, class: "form-label" %>
+          <%= form.text_field :name, class: "form-control" %>
+        </div>
+
+        <div class="mb-3">
+          <%= form.label :price, class: "form-label" %>
+          <%= form.number_field :price, step: 0.01, class: "form-control" %>
+        </div>
+
+        <div class="mb-3 form-check">
+          <%= form.check_box :available, class: "form-check-input" %>
+          <%= form.label :available, "Available", class: "form-check-label" %>
+        </div>
+
+        <div class="mb-3">
+          <%= form.label :description, class: "form-label" %>
+          <%= form.text_area :description, class: "form-control", rows: 3 %>
+        </div>
+
+        <!-- ✅ Categories Multi-select Checkboxes -->
+        <div class="mb-3">
+          <%= form.label :categories, "Select Categories", class: "form-label" %><br>
+          <%= form.collection_check_boxes :category_ids, Category.all, :id, :name do |cb| %>
+            <div class="form-check">
+              <%= cb.check_box(class: "form-check-input") %>
+              <%= cb.label(class: "form-check-label") %>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="text-center">
+          <%= form.submit "Update Menu Item", class: "btn btn-success" %>
+          <%= link_to "Back to Menu", menu_items_path, class: "btn btn-secondary ms-2" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
