@@ -29,6 +29,7 @@ gem "activeadmin"
 gem "devise"
 gem "doorkeeper"
 gem 'sassc'
+gem "sassc-rails"
 
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
@@ -44,6 +45,10 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
+
+gem 'rabl'
+
+
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
@@ -63,6 +68,17 @@ group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
 end
+  group :development, :test do
+    gem 'rspec-rails'
+    gem 'factory_bot_rails'
+    gem 'faker'
+    gem 'database_cleaner-active_record'
+  end
+
+  group :test do
+    gem 'shoulda-matchers'
+  end
+
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]

@@ -1,8 +1,8 @@
 <div class="container mt-4">
   <h2 class="mb-4 text-center">Customer Dashboard</h2>
   <!-- Info Button Section -->
-  <div class="d-flex justify-content-end mb-3">
-    <%= link_to "Logout", destroy_user_session_path, method: :delete, data: { turbo_method: :delete } %>
+  <div class="d-flex justify-content-end mb-3 gap-3">
+    <%= link_to "Logout", destroy_user_session_path,class: "btn btn-outline-dark", method: :delete, data: { turbo_method: :delete } %>
 
     <% if current_user.reload.info.present? %>
       <%= link_to "Info", info_path(current_user.info), class: "btn btn-outline-dark" %>

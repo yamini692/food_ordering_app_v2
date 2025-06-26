@@ -1,28 +1,24 @@
 class User < ApplicationRecord
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  include RansackableDefinitions
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
+
+ 
   validates :name, presence: true
   validates :email, presence: true, uniqueness: true, format: URI::MailTo::EMAIL_REGEXP
   validates :role, inclusion: { in: ["Customer", "Restaurant"] }
-  
+
+
   has_many :cart_items
   has_many :orders
   has_many :menu_items, foreign_key: "user_id"
   has_many :received_orders, through: :menu_items, source: :orders
-
   has_many :reviews, dependent: :destroy
   has_one :info, dependent: :destroy
+
   accepts_nested_attributes_for :info
-  def self.ransackable_attributes(auth_object = nil)
-    %w[id name email role created_at updated_at]
-  end
-  
 
-
-  validates :email, presence: true
-
+ 
   before_validation :strip_email
   before_save :downcase_email
 

@@ -1,7 +1,10 @@
 class CartItem < ApplicationRecord
-  validates :user_id, presence: true
-  validates :menu_item_id, presence: true
+  include RansackableDefinitions
+
+  validates :user, presence: true
+  validates :menu_item, presence: true
 
   belongs_to :user
   belongs_to :menu_item
+
 end

@@ -1,5 +1,6 @@
 class HomesController < ApplicationController
   before_action :authenticate_user!
+  layout 'application'
 
   def home
     if current_user.role == "Restaurant"

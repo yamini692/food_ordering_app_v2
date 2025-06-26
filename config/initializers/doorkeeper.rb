@@ -2,7 +2,7 @@ Doorkeeper.configure do
   orm :active_record
   use_refresh_token
 
-
+  
   grant_flows %w[password client_credentials authorization_code]
   access_token_methods :from_bearer_authorization
   access_token_expires_in 1.day
