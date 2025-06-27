@@ -1,19 +1,25 @@
+# app/services/bulk_order_creator.rb
 class BulkOrderCreator
   def initialize(user)
     @user = user
   end
 
   def call
-    cart_items = @user.cart_items.includes(:menu_item)
-    return nil if cart_items.empty?
+    return [] if @user.cart_items.empty?
 
-    order = Order.create(user: @user, status: "pending")
+    orders = []
 
-    cart_items.each do |cart_item|
-      OrderItem.create(order: order, menu_item: cart_item.menu_item, quantity: 1)
+    @user.cart_items.includes(:menu_item).find_each do |cart_item|
+      order = @user.orders.create(
+        menu_item: cart_item.menu_item,
+        quantity: 1,
+        payment_method: "cash_on_delivery",
+        status: "pending"
+      )
+      orders << order if order.persisted?
     end
 
-    cart_items.destroy_all
-    order
+    @user.cart_items.destroy_all
+    orders
   end
 end

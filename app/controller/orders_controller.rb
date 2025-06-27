@@ -46,8 +46,13 @@ class OrdersController < ApplicationController
 
 
   def edit
-    @order = current_user.orders.find(params[:id])
+    if params[:bulk] == "true"
+      @orders = current_user.orders.where(status: "pending").order(created_at: :desc).limit(params[:count] || 5)
+    else
+      @order = current_user.orders.find(params[:id])
+    end
   end
+
 
   def update
     @order = current_user.orders.find(params[:id])
@@ -59,10 +64,10 @@ class OrdersController < ApplicationController
   def success
   end
   def bulk_create
-    order = BulkOrderCreator.new(current_user).call
+    orders = BulkOrderCreator.new(current_user).call
 
-    if order
-      redirect_to edit_order_path(order), notice: "Please choose a payment method to confirm your order."
+    if orders.present?
+      redirect_to edit_order_path(orders.first, bulk: true, count: orders.count), notice: "Please complete your orders."
     else
       redirect_to cart_items_path, alert: "Your cart is empty!"
     end

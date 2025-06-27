@@ -12,13 +12,21 @@ class RestaurantOrdersController < ApplicationController
       redirect_to restaurant_orders_path, alert: "Failed to update status."
     end
   end
-  def index
-    @orders = Order
-      .joins(:menu_item)
-      .where(menu_items: { user_id: current_user.id })
-      .where.not(status: ['delivered', 'cancelled','pending']) # 👈 filter delivered & cancelled
-      .order(created_at: :desc)
-  end
+  
+
+    # Group orders by user and status
+    def index
+      orders = Order.joins(:menu_item)
+                    .where(menu_items: { user_id: current_user.id })
+                    .where(status: ["pending", "placed", "on the way"])
+                    .where(deleted_at: nil)
+                    .includes(:menu_item, :user)
+                    .order(:created_at)
+
+      # Group only those orders with same user and same created_at timestamp (bulk)
+      @grouped_orders = orders.group_by { |order| [order.user_id, order.created_at.to_i] }
+    end
+  
 
   def update
     @order = Order.find(params[:id])

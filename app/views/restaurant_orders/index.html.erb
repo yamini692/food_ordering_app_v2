@@ -1,76 +1,73 @@
-<div class="container mt-5">
-  <div class="text-center mb-4">
-    <h2>📋 My Restaurant's Orders</h2>
+<% if @grouped_orders.blank? %>
+  <div class="alert alert-info text-center mt-5">
+    📭 No orders yet.
   </div>
+<% end %>
+<% @grouped_orders.each do |(user_id, timestamp), orders| %>
+  <% user = orders.first.user %>
 
-  <% if @orders.empty? %>
-    <div class="alert alert-info text-center">
-      No orders have been placed yet.
+  <div class="card shadow mb-5 border-primary">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <div>
+        👤 <%= user.name.presence || user.email || "Unknown Customer" %>
+      </div>
+      <div>
+        🛒 <span class="badge bg-light text-dark"><%= pluralize(orders.size, "item") %></span>
+      </div>
     </div>
-  <% else %>
-    <div class="table-responsive">
-      <table class="table table-hover table-bordered align-middle shadow-sm">
-        <thead class="table-dark">
-          <tr>
-            <th scope="col">🍽️ Dish</th>
-            <th scope="col">🔢 Quantity</th>
-            <th scope="col">💰 Total Price</th>
-            <th scope="col">👤 Customer</th>
-            <th scope="col">📦 Status</th>
-            <th scope="col">🚚 Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @orders.each do |order| %>
-            <tr>
-              <td><strong><%= order.menu_item&.name || "Item Missing" %></strong></td>
-              <td><%= order.quantity %></td>
-              <td>
-                <% if order.menu_item.present? %>
-                  ₹<%= order.quantity.to_i * order.menu_item.price %>
-                <% else %>
-                  <span class="text-danger">Menu Item Missing</span>
-                <% end %>
-              </td>
 
-              <td><%= order.user&.name.presence || order.user&.email || "Unknown" %></td>
-              <td>
-                <% status_badge = case order.status
+    <div class="card-body bg-light">
+      <% orders.each do |order| %>
+        <div class="mb-4 p-3 border-bottom">
+          <h5 class="text-primary fw-semibold">🍽️ <%= order.menu_item.name %></h5>
+          <p class="mb-1">🔢 <strong>Quantity:</strong> <%= order.quantity %></p>
+          <p class="mb-1">💰 <strong>Price:</strong> ₹<%= order.quantity.to_i * order.menu_item.price %></p>
+          <p class="mb-1">
+            📦 <strong>Status:</strong>
+            <span class="badge 
+              <%= case order.status
                   when "placed" then "bg-secondary"
                   when "on the way" then "bg-info text-dark"
                   when "delivered" then "bg-success"
                   else "bg-warning"
-                end %>
-                <span class="badge <%= status_badge %>">
-                  <%= order.status.titleize %>
-                </span>
-              </td>
-              <td>
-                <% if order.status == "placed" %>
-                  <%= button_to "Book (On the Way)", book_restaurant_order_path(order),
-                        method: :patch,
-                        class: "btn btn-outline-primary btn-sm me-2",
-                        data: { confirm: "Mark as 'On the Way'?" } %>
+              end %>">
+              <%= order.status.titleize %>
+            </span>
+          </p>
+        </div>
+      <% end %>
 
-                  <%= button_to "Mark as Delivered", restaurant_order_path(order),
-                        method: :patch,
-                        class: "btn btn-outline-success btn-sm",
-                        data: { confirm: "Confirm delivery?" } %>
+      <!-- 💰 Group Total -->
+      <div class="fw-bold text-end fs-5 text-dark mt-3">
+        🧾 Total Amount: ₹<%= orders.sum { |o| o.quantity.to_i * o.menu_item.price } %>
+      </div>
 
-                <% elsif order.status == "on the way" %>
-                  <%= button_to "Mark as Delivered", restaurant_order_path(order),
-                        method: :patch,
-                        class: "btn btn-outline-success btn-sm",
-                        data: { confirm: "Confirm delivery?" } %>
-
-                <% elsif order.status == "delivered" %>
-                  <span class="text-success fw-bold">Delivered ✅</span>
-                <% end %>
-              </td>
-            </tr>
+      <!-- 🚚 Group Action Buttons -->
+      <div class="d-flex justify-content-end mt-3 gap-3">
+        <% if orders.any? { |o| ["pending", "placed"].include?(o.status) } %>
+          <% orders.each do |order| %>
+            <% if ["pending", "placed"].include?(order.status) %>
+              <%= button_to "🚚 Book All", book_restaurant_order_path(order),
+                    method: :patch,
+                    class: "btn btn-outline-primary btn-sm",
+                    data: { confirm: "Mark all items in this group as 'On the Way'?" } %>
+              <% break %> <%# Only show one button for the whole group %>
+            <% end %>
           <% end %>
-        </tbody>
-      </table>
+        <% end %>
+
+        <% if orders.any? { |o| ["pending", "placed", "on the way"].include?(o.status) } %>
+          <% orders.each do |order| %>
+            <% if ["pending", "placed", "on the way"].include?(order.status) %>
+              <%= button_to "✅ Mark All Delivered", restaurant_order_path(order),
+                    method: :patch,
+                    class: "btn btn-outline-success btn-sm",
+                    data: { confirm: "Mark all items in this group as Delivered?" } %>
+              <% break %>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
     </div>
-  <% end %>
-</div>
+  </div>
+<% end %>

@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe "API::MenuItems", type: :request do
   describe "POST /api/menu_items" do
-    let(:user) { create(:user, :restaurant) }  # ✅ Trait-based role
+    let(:user) { create(:user, :restaurant) } 
     let(:token) { create(:access_token, resource_owner_id: user.id) }
     let(:headers) { { "Authorization" => "Bearer #{token.token}" } }
 

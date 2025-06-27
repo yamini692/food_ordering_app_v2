@@ -1,29 +1,83 @@
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 70vh;">
-  <div class="card p-4 shadow" style="width: 100%; max-width: 400px;">
-    <h2 class="text-center mb-4">Select Payment Method</h2>
+<% if @orders.present? %>
+  <div class="container mt-4">
+    <div class="card p-4 shadow-lg">
+      <h3 class="text-primary text-center mb-4">🧾 Confirm Your Orders</h3>
 
-    <%= form_with model: @order, local: true do |form| %>
-      
-      <!-- ✅ Quantity Selector -->
-      <div class="mb-3">
-        <%= form.label :quantity, "Quantity", class: "form-label" %>
-        <%= form.number_field :quantity, in: 1..10, value: @order.quantity || 1, class: "form-control" %>
+      <!-- ✅ Shared Payment Method Section -->
+      <div class="mb-4">
+        <label class="form-label fw-bold">💳 Payment Method</label><br>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="shared_payment_method" id="cash" value="cash" checked>
+          <label class="form-check-label" for="cash">Cash on Delivery</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="shared_payment_method" id="upi" value="upi">
+          <label class="form-check-label" for="upi">UPI</label>
+        </div>
+        <div class="form-text">Selected payment method will apply to all orders.</div>
       </div>
 
-      <div class="form-check mb-3">
-        <%= form.radio_button :payment_method, "cash", class: "form-check-input", id: "cash" %>
-        <%= form.label :payment_method_cash, "Cash on Delivery", class: "form-check-label", for: "cash" %>
-      </div>
+      <!-- ✅ Loop through each order -->
+      <% @orders.each_with_index do |order, index| %>
+        <%= form_with model: order, url: order_path(order), method: :patch, local: true, html: { class: "individual-order-form" } do |form| %>
+          <div class="card mb-4 p-3 bg-light border-primary">
+            <h5 class="mb-2 text-primary">🍽️ <%= order.menu_item.name %></h5>
 
-      <div class="form-check mb-4">
-        <%= form.radio_button :payment_method, "upi", class: "form-check-input", id: "upi" %>
-        <%= form.label :payment_method_upi, "UPI", class: "form-check-label", for: "upi" %>
-      </div>
+            <div class="mb-3">
+              <%= form.label :quantity, "Quantity", class: "form-label" %>
+              <%= form.number_field :quantity, value: order.quantity || 1, class: "form-control", min: 1 %>
+            </div>
 
-      <div class="d-grid">
-        <%= form.submit "Place Order", class: "btn btn-primary btn-block" %>
-      </div>
-      
-    <% end %>
+            <!-- Hidden field to copy shared payment method via JS -->
+            <%= form.hidden_field :payment_method, value: "", class: "payment-method-field" %>
+
+            <%= form.submit "Place Order", class: "btn btn-outline-primary" %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
   </div>
-</div>
+
+  <!-- ✅ JavaScript to copy payment method to all hidden fields before submitting -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const sharedRadios = document.querySelectorAll('input[name="shared_payment_method"]');
+      const forms = document.querySelectorAll(".individual-order-form");
+
+      forms.forEach(form => {
+        form.addEventListener("submit", function (e) {
+          const selected = document.querySelector('input[name="shared_payment_method"]:checked');
+          const hiddenField = form.querySelector(".payment-method-field");
+          hiddenField.value = selected ? selected.value : "";
+        });
+      });
+    });
+  </script>
+
+<% elsif @order.present? %>
+  <!-- Fallback for single order -->
+  <div class="container mt-4">
+    <div class="card p-4 shadow">
+      <h4 class="text-primary mb-3">Complete Your Order</h4>
+
+      <%= form_with model: @order, local: true do |form| %>
+        <div class="mb-3">
+          <%= form.label :quantity, class: "form-label" %>
+          <%= form.number_field :quantity, value: @order.quantity || 1, class: "form-control", min: 1 %>
+        </div>
+
+        <div class="form-check mb-3">
+          <%= form.radio_button :payment_method, "cash", class: "form-check-input", id: "cash_single" %>
+          <%= form.label :payment_method_cash, "Cash on Delivery", class: "form-check-label", for: "cash_single" %>
+        </div>
+
+        <div class="form-check mb-4">
+          <%= form.radio_button :payment_method, "upi", class: "form-check-input", id: "upi_single" %>
+          <%= form.label :payment_method_upi, "UPI", class: "form-check-label", for: "upi_single" %>
+        </div>
+
+        <%= form.submit "Place Order", class: "btn btn-primary" %>
+      <% end %>
+    </div>
+  </div>
+<% end %>

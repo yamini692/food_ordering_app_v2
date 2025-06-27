@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "API::Orders", type: :request do
   let(:user) { create(:user) }
-  let(:menu_item) { create(:menu_item) }
+  let(:menu_item) { create(:menu_item, user: user) } 
   let(:token) { create(:access_token, resource_owner_id: user.id) }
 
   describe "POST /api/orders" do
@@ -18,6 +18,7 @@ RSpec.describe "API::Orders", type: :request do
         },
         headers: { Authorization: "Bearer #{token.token}" }
 
+      puts response.body
       expect(response).to have_http_status(:created)
       expect(JSON.parse(response.body)["message"]).to eq("Order placed successfully")
     end

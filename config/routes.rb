@@ -54,7 +54,12 @@ Rails.application.routes.draw do
   end
 
   resources :reviews, only: [:create, :edit, :update]
-  resources :customer_orders, only: [:index, :destroy]
+  resources :customer_orders, only: [:index, :destroy] do
+    collection do
+      delete :destroy_all
+    end
+  end
+
   resources :menu_items do
     get 'reviews', to: 'menu_items#reviews'
     resources :reviews, only: [:index]
@@ -80,5 +85,6 @@ Rails.application.routes.draw do
       end
     end
   end
+  
 end
 
