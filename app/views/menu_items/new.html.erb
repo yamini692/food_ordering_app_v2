@@ -2,6 +2,18 @@
   <h2 class="text-center mb-4">Add a New Dish</h2>
 
   <%= form_with model: @menu_item, local: true do |f| %>
+  
+    <% if @menu_item.errors.any? %>
+      <div class="alert alert-danger">
+        <h5 class="alert-heading">Invalid input. Please check the following:</h5>
+        <ul>
+          <% @menu_item.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
     <div class="mb-3">
       <%= f.label :name, class: "form-label" %>
       <%= f.text_field :name, class: "form-control" %>
@@ -22,7 +34,6 @@
       <%= f.text_area :description, class: "form-control", rows: 3 %>
     </div>
 
-    <!-- ✅ FIXED SECTION -->
     <div class="mb-3">
       <%= f.label :categories, "Select Categories", class: "form-label" %><br>
       <%= f.collection_check_boxes :category_ids, Category.all, :id, :name do |cb| %>

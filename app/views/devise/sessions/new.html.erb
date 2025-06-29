@@ -4,6 +4,12 @@
 
       <h2 class="mb-4 text-center">Login</h2>
 
+      <% if flash[:alert] %>
+        <div class="alert alert-danger text-center">
+          <%= flash[:alert] %>
+        </div>
+      <% end %>
+
       <%= form_with url: new_user_session_path, method: :post, local: true, class: "needs-validation" do |f| %>
         <div class="mb-3">
           <%= label_tag :email, "Email", class: "form-label" %>
@@ -19,8 +25,8 @@
           <%= submit_tag "Log in", class: "btn btn-primary" %>
         </div>
       <% end %>
-      <%= link_to "Forgot your password?", new_user_password_path %>
 
+      <%= link_to "Forgot your password?", new_user_password_path %>
 
       <hr class="my-4">
 

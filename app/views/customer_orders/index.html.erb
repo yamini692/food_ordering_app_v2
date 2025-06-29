@@ -32,6 +32,13 @@
           <span class="badge <%= badge_class %>"><%= status_text %></span>
         </p>
 
+        <!-- ✅ Custom Message for Placed or Pending -->
+        <% if order.status.in?(%w[placed pending]) %>
+          <div class="alert alert-warning p-2 mt-2 small text-center">
+            🕒 Your order is placed. Please wait for 10 minutes.
+          </div>
+        <% end %>
+
         <!-- Dish Review -->
         <% if order.status == "delivered" %>
           <% review = order.menu_item.reviews.find_by(user: current_user, order_id: order.id) %>
@@ -105,6 +112,4 @@
   <div class="text-center">
     <%= link_to "← Back to Home", customer_home_path, class: "btn btn-primary mt-3" %>
   </div>
-
-  
 </div>
