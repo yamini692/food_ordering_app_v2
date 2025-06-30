@@ -3,6 +3,7 @@
     📭 No orders yet.
   </div>
 <% end %>
+
 <% @grouped_orders.each do |(user_id, timestamp), orders| %>
   <% user = orders.first.user %>
 
@@ -22,17 +23,19 @@
           <h5 class="text-primary fw-semibold">🍽️ <%= order.menu_item.name %></h5>
           <p class="mb-1">🔢 <strong>Quantity:</strong> <%= order.quantity %></p>
           <p class="mb-1">💰 <strong>Price:</strong> ₹<%= order.quantity.to_i * order.menu_item.price %></p>
+
+          <%# 🌟 Status Logic %>
+          <% display_status = ["pending", "placed"].include?(order.status) ? "Pending" : order.status.titleize %>
+          <% badge_class = case order.status
+            when "pending", "placed" then "bg-warning text-dark"
+            when "on the way" then "bg-info text-dark"
+            when "delivered" then "bg-success"
+            else "bg-secondary"
+          end %>
+
           <p class="mb-1">
             📦 <strong>Status:</strong>
-            <span class="badge 
-              <%= case order.status
-                  when "placed" then "bg-secondary"
-                  when "on the way" then "bg-info text-dark"
-                  when "delivered" then "bg-success"
-                  else "bg-warning"
-              end %>">
-              <%= order.status.titleize %>
-            </span>
+            <span class="badge <%= badge_class %>"><%= display_status %></span>
           </p>
         </div>
       <% end %>
@@ -51,7 +54,7 @@
                     method: :patch,
                     class: "btn btn-outline-primary btn-sm",
                     data: { confirm: "Mark all items in this group as 'On the Way'?" } %>
-              <% break %> <%# Only show one button for the whole group %>
+              <% break %>
             <% end %>
           <% end %>
         <% end %>

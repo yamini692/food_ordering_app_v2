@@ -9,12 +9,19 @@ Rails.application.routes.draw do
   # Root
   root to: "homes#home"
 
-  # Devise for users with custom controllers
   devise_for :users, controllers: {
-    registrations: 'users/registrations',
-    sessions: 'users/sessions',
-    passwords: 'users/passwords'  # 👈 add this to explicitly define password controller
-  }
+  registrations: 'users/registrations',
+  sessions: 'users/sessions',
+  passwords: 'users/passwords'
+}
+
+# Devise custom role-based signup paths
+devise_scope :user do
+  get 'users/sign_up/customer', to: 'users/registrations#new', defaults: { role: 'Customer' }, as: :new_customer_registration
+  get 'users/sign_up/restaurant', to: 'users/registrations#new', defaults: { role: 'Restaurant' }, as: :new_restaurant_registration
+  get 'users/sign_out', to: 'devise/sessions#destroy'  # optional override
+end
+
 
   # Explicit Devise password reset routes (optional, included by default)
   # devise_scope :user do
@@ -30,12 +37,7 @@ Rails.application.routes.draw do
     get 'users/sign_out', to: 'devise/sessions#destroy'
   end
 
-  # Custom signup paths for roles
-  devise_scope :user do
-    get 'users/sign_up/customer', to: 'users/registrations#new', defaults: { role: 'Customer' }, as: :new_customer_registration
-    get 'users/sign_up/restaurant', to: 'users/registrations#new', defaults: { role: 'Restaurant' }, as: :new_restaurant_registration
-  end
-
+  
   # Application pages
   get "menu_items/search", to: "menu_items#search", as: :search_menu_items
   get "customer/home", to: "pages#customer_home", as: :customer_home

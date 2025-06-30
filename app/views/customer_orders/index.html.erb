@@ -24,6 +24,7 @@
             when "placed", "pending" then "bg-warning text-dark"
             when "delivered" then "bg-success"
             when "cancelled" then "bg-danger"
+            when "on the way" then "bg-info text-dark"
             else "bg-secondary"
         end %>
 
@@ -32,10 +33,14 @@
           <span class="badge <%= badge_class %>"><%= status_text %></span>
         </p>
 
-        <!-- ✅ Custom Message for Placed or Pending -->
+        <!-- ✅ Custom Status Messages -->
         <% if order.status.in?(%w[placed pending]) %>
           <div class="alert alert-warning p-2 mt-2 small text-center">
             🕒 Your order is placed. Please wait for 10 minutes.
+          </div>
+        <% elsif order.status == "on the way" %>
+          <div class="alert alert-info p-2 mt-2 small text-center">
+            🚗 Your food has been picked up and will reach you shortly.
           </div>
         <% end %>
 
